@@ -1,0 +1,40 @@
+/* Variables */
+
+@black: black;
+@absPos: absolute;
+@lineThickness: 1px;
+@blockSide: 25px;
+
+/* Mixins */
+
+.no-margin {
+    margin: 0;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+/* Main rules */
+
+body {
+    .no-margin;
+    .no-padding;
+}
+
+.gridHolder {
+    margin: 10px;
+	position: relative;
+}
+
+.lineMain {
+    position: @absPos;
+    background: @black;
+}
+
+.filledBlock {
+	height: @blockSide;
+	width: @blockSide;
+	background: @black;
+	position: @absPos;
+}

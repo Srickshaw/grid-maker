@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>GridMaker</title>
+        <link href="dist/css/style.min.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+        <input type="text" id="gHeight" placeholder="Enter a height">
+        <input type="text" id="gWidth" placeholder="Enter a width">
+		<select id="fillColor">
+			<option value="Red">Red</option>
+			<option value="Blue">Blue</option>			
+			<option value="Black">Black</option>
+			<option value="Green">Green</option>
+			<option value="Cornsilk">Cornsilk</option>
+			<option value="Clear">Transparent</option>
+		</select>
+		<button id="clearGrid">Clear Grid</button>
+        <button type="submit" value="Generate Grid" id="gridGen">Generate Grid</button>
+        <div id="grid" class="gridHolder">
+			<div id="gridContent"></div>
+			<div id="blockHolder"></div>
+		</div>
+		<div id="coords"></div>
+		<div id="clickXCoords"></div>
+		<div id="clickYCoords"></div>
+        <script src="dist/js/gridGen.min.js"></script>
+		
+    </body>
+</html>
