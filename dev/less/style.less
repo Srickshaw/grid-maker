@@ -3,6 +3,7 @@
 @black: black;
 @absPos: absolute;
 @lineThickness: 1px;
+@borderStyle: solid;
 @blockSide: 25px;
 
 /* Mixins */
@@ -30,6 +31,13 @@ body {
 .lineMain {
     position: @absPos;
     background: @black;
+}
+
+.canvasGrid {
+	border-bottom-style: solid;
+	border-right-style: solid;
+	border-color: black;
+	border-width: 1px;
 }
 
 .filledBlock {

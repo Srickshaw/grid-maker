@@ -1,4 +1,4 @@
-'use srict';
+'use strict';
 
 var gId = function(elemId) {
 	return document.getElementById(elemId);
@@ -13,12 +13,12 @@ function generateGrid(height, width) {
 	var cElem = document.createElement('canvas');
 	cElem.setAttribute('width', adjWidth);
 	cElem.setAttribute('height', adjHeight);
-	cElem.style.border = '1px solid black';
+	cElem.setAttribute('class', 'canvasGrid');
 	cElem.setAttribute('id', 'canvasGrid');
-	for (var i = 1; i <= height; i++) {
+	for (var i = 0; i <= height; i++) {
 		genLine(1, adjWidth, (i * 25), 0, cElem);		
 	}
-	for (var i = 1; i <= width; i++) {
+	for (var i = 0; i <= width; i++) {
 		genLine((height * 25), 1, 0, (i * 25), cElem);
 	}
 	return cElem;
@@ -33,11 +33,20 @@ function genLine(height, width, top, left, canvasElement) {
 function genBlock(left, top, color, blockId, blockClass, canvasElement) {
 	var cBlock = canvasElement.getContext('2d');
 	if(color.toLowerCase() == 'clear') {
-		cBlock.clearRect(left, top, 25, 25);
+		cBlock.clearRect(left, top, 24, 24);
 	}
 	else {
 		cBlock.fillStyle = color;
-		cBlock.fillRect(left, top, 25, 25);
+		cBlock.fillRect(left, top, 24, 24);
+	}
+}
+
+function clearBlock(height, width, canvasElement) {
+	var clearBlock = canvasElement.getContext('2d');
+	for (var i = 0; i <= height; i++) {
+		for (var j = 0; j <= width; j++) {
+			clearBlock.clearRect(((j * 25) + 1), ((i * 25) + 1), 24, 24);
+		}
 	}
 }
 
@@ -49,6 +58,10 @@ gId('gridGen').addEventListener('click', function(e) {
 
 gId('grid').addEventListener('mousemove', function(e) {
 	gId('coords').innerHTML = 'X Position: ' + (e.clientX - gId('grid').offsetLeft) + ', Y Position: ' + (e.clientY - gId('grid').offsetTop);
+});
+
+gId('clearGrid').addEventListener('click', function(e) {
+	clearBlock(gId('canvasGrid').getAttribute('height'),gId('canvasGrid').getAttribute('width'),gId('canvasGrid'));
 });
 
 document.querySelector('body').addEventListener('click', function(e) {
@@ -71,6 +84,6 @@ document.querySelector('body').addEventListener('click', function(e) {
 		else if((e.clientX - 10) % 25 === 0) { xClick = (e.clientX - 10); }
 		else if((e.clientY - 35) % 25 === 0) { yClick = (e.clientY - 35); }
 		coords = xClick + 'x' + yClick;
-		genBlock(xClick, yClick, fillColor.options[fillColor.selectedIndex].text, coords, 'filledBlock', gId('canvasGrid'));
+		genBlock((xClick +1), (yClick + 1), fillColor.options[fillColor.selectedIndex].text, coords, 'filledBlock', gId('canvasGrid'));
 	}
 });
