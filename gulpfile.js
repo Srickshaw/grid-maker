@@ -5,13 +5,15 @@ var uglify = require('gulp-uglify');
 var plumber = require('gulp-plumber');
 var rename = require('gulp-rename');
 var babel = require('gulp-babel');
+var sourceMap = require('gulp-sourcemaps');
 
 gulp.task('minjs', function() {
 	gulp.src('dev/js/*.js')
-	.pipe(babel())
+	.pipe(sourceMap.init())
 	.pipe(uglify())
 	.pipe(plumber())
 	.pipe(rename({ suffix: '.min' }))
+	.pipe(sourceMap.write())
 	.pipe(gulp.dest('dist/js'))
 });
 
@@ -24,4 +26,4 @@ gulp.task('mincss', function() {
 	.pipe(gulp.dest('dist/css'))
 });
 
-gulp.task('compile', ['minjs', 'mincss']);
+gulp.task('build', ['minjs', 'mincss']);

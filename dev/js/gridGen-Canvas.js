@@ -1,5 +1,8 @@
 'use strict';
 
+var testArray = [];
+var gridData = [];
+
 var gId = function(elemId) {
 	return document.getElementById(elemId);
 };
@@ -30,22 +33,55 @@ function genLine(height, width, top, left, canvasElement) {
 	cLine.fillRect(left, top, width, height);
 }
 
-function genBlock(left, top, color, blockId, blockClass, canvasElement) {
+function genBlock(left, top, color, canvasElement) {
 	var cBlock = canvasElement.getContext('2d');
+	var blockObj = {};	
 	if(color.toLowerCase() == 'clear') {
-		cBlock.clearRect(left, top, 24, 24);
+		blockObj.y = left;
+		blockObj.x = top;
+		for (var i = 0; i < testArray.length; i++) {
+			if (testArray[i].x == blockObj.x) {
+				console.log(blockObj.x);
+				if(testArray[i].y == blockObj.y) {
+					console.log(blockObj.y);
+					testArray.splice(i, 1);
+				}
+			}
+		}
+		cBlock.clearRect(left, top, 24, 24);		
 	}
 	else {
 		cBlock.fillStyle = color;
 		cBlock.fillRect(left, top, 24, 24);
+		blockObj.y = left;
+		blockObj.x = top;
+		blockObj.color = color;
+		for (var i = 0; i < testArray.length; i++) {
+			if (testArray[i].x == blockObj.x) {
+				console.log(blockObj.x);
+				if(testArray[i].y == blockObj.y) {
+					console.log(blockObj.y);
+					testArray.splice(i, 1);
+				}
+			}
+		}
+		testArray.push(blockObj);
+		console.log(testArray);
 	}
 }
 
-function clearBlock(height, width, canvasElement) {
-	var clearBlock = canvasElement.getContext('2d');
-	for (var i = 0; i <= height; i++) {
-		for (var j = 0; j <= width; j++) {
-			clearBlock.clearRect(((j * 25) + 1), ((i * 25) + 1), 24, 24);
+function createFill(height, width, color, canvasElement) {
+	var fillBlock = canvasElement.getContext('2d');	
+	for (var i = 0; i < height; i++) {
+		for (var j = 0; j < width; j++) {
+			if (color.toLowerCase() === 'clear') {
+				fillBlock.clearRect(((j * 25) + 1), ((i * 25) + 1), 24, 24);
+				testArray = [];
+			}
+			else {
+				fillBlock.fillStyle = color;
+				fillBlock.fillRect(((j * 25) + 1), ((i * 25) + 1), 24, 24);				
+			}
 		}
 	}
 }
@@ -60,8 +96,45 @@ gId('grid').addEventListener('mousemove', function(e) {
 	gId('coords').innerHTML = 'X Position: ' + (e.clientX - gId('grid').offsetLeft) + ', Y Position: ' + (e.clientY - gId('grid').offsetTop);
 });
 
-gId('clearGrid').addEventListener('click', function(e) {
-	clearBlock(gId('canvasGrid').getAttribute('height'),gId('canvasGrid').getAttribute('width'),gId('canvasGrid'));
+gId('clearGrid').addEventListener('click', function() {
+	createFill(gId('canvasGrid').getAttribute('height'),gId('canvasGrid').getAttribute('width'), 'Clear', gId('canvasGrid'));
+});
+
+gId('createFill').addEventListener('click', function() {
+	var fillColor = gId('fillColor');
+	createFill(gId('fillHeight').value, gId('fillWidth').value, fillColor.options[fillColor.selectedIndex].text, gId('canvasGrid')); 
+});
+
+gId('saveData').addEventListener('click', function() {
+	var gridSize = { height: gId('canvasGrid').getAttribute('height'), width: gId('canvasGrid').getAttribute('width') };	
+	testArray.push(gridSize);
+	localStorage.setItem('gridData', JSON.stringify(testArray));
+	console.log(localStorage.gridData);
+});
+
+gId('restoreData').addEventListener('click', function() {
+	if(localStorage) {
+		var restoredGridData = localStorage.getItem('gridData');
+		var restoredData = JSON.parse(restoredGridData);
+		if(restoredData.length === 1) {
+			var gridHeight = restoredData[0].height / 25;
+			var gridWidth = restoredData[0].width / 25;
+			gId('grid').innerHTML = '';
+			var gridElement = (generateGrid(gridHeight, gridWidth));
+			gId('grid').appendChild(gridElement);
+		}
+		else if(restoredData.length > 1) {
+			var gridHeight = restoredData[restoredData.length - 1].height / 25;
+			var gridWidth = restoredData[restoredData.length - 1].width / 25;
+			gId('grid').innerHTML = '';
+			var gridElement = (generateGrid(gridHeight, gridWidth));
+			gId('grid').appendChild(gridElement);
+			for (var i = 0; i < (restoredData.length - 1); i++) {
+				genBlock(restoredData[i].y, restoredData[i].x, restoredData[i].color, gId('canvasGrid'));
+			}
+		}
+		else { console.log("There's no data to recover!");  }
+	}
 });
 
 document.querySelector('body').addEventListener('click', function(e) {
@@ -83,7 +156,6 @@ document.querySelector('body').addEventListener('click', function(e) {
 		}
 		else if((e.clientX - 10) % 25 === 0) { xClick = (e.clientX - 10); }
 		else if((e.clientY - 35) % 25 === 0) { yClick = (e.clientY - 35); }
-		coords = xClick + 'x' + yClick;
-		genBlock((xClick +1), (yClick + 1), fillColor.options[fillColor.selectedIndex].text, coords, 'filledBlock', gId('canvasGrid'));
+		genBlock((xClick + 1), (yClick + 1), fillColor.options[fillColor.selectedIndex].text, gId('canvasGrid'));
 	}
 });
