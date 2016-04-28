@@ -3,6 +3,6 @@ A grid-making application - right now it has support to add filled in boxes anyw
 
 To use 
   * `npm install`
-  * `gulp compile`
+  * `gulp build`
   * `Load index.html`
 
